@@ -15,6 +15,10 @@ wfs_url <- "http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geose
 #' VicmapClient <- newClient()
 
 newClient <- function(version = "1.1.1", ...) {
+  
+ows4R::WFSClient$set("public", "selectLayer", NULL, overwrite = TRUE)
+ows4R::WFSClient$set("public", "geomField", NULL, overwrite = TRUE)  
+ows4R::WFSClient$set("public", "filter", NULL, overwrite = TRUE) 
 
 ows4R::WFSClient$new(wfs_url, 
                      serviceVersion = version, 

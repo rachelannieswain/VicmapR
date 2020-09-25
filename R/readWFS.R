@@ -91,6 +91,8 @@ read_layer_sf <- function(layer_name,
   
   request <- httr::build_url(url)
   
+  print(request)
+  
   # Return an sf object
   return(sf::read_sf(request, ...))
   
