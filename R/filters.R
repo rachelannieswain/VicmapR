@@ -1,16 +1,3 @@
-selectLayer <- function(Client, layer) {
-  UseMethod("selectLayer", Client)
-}
-
-selectLayer.OWSClient <- function(Client, layer) {
-  if(layer %in% listLayers(Client = Client)$name) {
-  Client$selectLayer <- layer
-  } else {
-    stop(paste("Layer:", layer, "is not available from", deparse(substitute(Client))))
-  }
-  return(Client)
-}
-
 #### Format Polygon ####
 polygonFormat <- function(shape, ...) {
   UseMethod("polygonFormat", shape)
@@ -32,6 +19,8 @@ polygonFormat.sf <- function(shape, ...) {
 }
   
 filterGeo <- function(Client, method, shape = NULL, add_args = NULL) {
+  
+  Client2 <- Client$clone()
 
   if(length(add_args) > 0) {
   args <- paste(paste0(", ", add_args), collapse = "")
@@ -39,48 +28,34 @@ filterGeo <- function(Client, method, shape = NULL, add_args = NULL) {
     args <- ""
   }
   
-  if(is.null(Client$selectLayer)) {
+  if(is.null(Client2$selectLayer)) {
     stop(paste0("No layer has been selected from ", 
                 deparse(substitute(Client)), 
-                ". Select layer using selectLayer"))
+                ". Select layer using selectWFS"))
   }
   
-  if(is.null(Client$geomField)) {
+  if(is.null(Client2$geomField)) {
     # Name of spatial field
-    Client$geomField <- Client$
+    Client2$geomField <- Client2$
       getCapabilities()$
-      findFeatureTypeByName(Client$selectLayer)$
+      findFeatureTypeByName(Client2$selectLayer)$
       getDescription(pretty = TRUE) %>%
       dplyr::filter(type == "geometry") %>%
       dplyr::pull(name) 
   } 
   
   if(method == "bbox") {
-    add_filter <- paste0(method, "(", Client$geomField, args, ")")
+    add_filter <- paste0(method, "(", Client2$geomField, args, ")")
   } else {
-  add_filter <- paste0(method, "(", Client$geomField, ", ", polygonFormat(shape), args, ")")
+  add_filter <- paste0(method, "(", Client2$geomField, ", ", polygonFormat(shape), args, ")")
   }
   
-  if(is.null(Client$filter)) {
-    Client$filter <- add_filter
+  if(is.null(Client2$filter)) {
+    Client2$filter <- add_filter
   } else{
-    Client$filter <- paste(Client$filter, "AND", add_filter)
+    Client2$filter <- paste(Client2$filter, "AND", add_filter)
   }
-  return(Client)
-}
-
-buildQuery <- function(Client) {
-  
-  queryUrl <- httr::parse_url(Client$getUrl())
-  queryUrl$query <- list(service = "wfs",
-                                version = "1.0.0",
-                                request = "GetFeature",
-                                typename = Client$selectLayer,
-                                outputFormat = "application/json",
-                                srsName = paste0("EPSG:4283"),
-                                CQL_FILTER = Client$filter) %>% purrr::discard(is.null)
-  
-  return(httr::build_url(queryUrl))
+  return(Client2)
 }
 
 
@@ -155,16 +130,21 @@ filterWFS.OWSClient <- function(Client, ...) {
   return(Client)
 }
 
+#### functions to export ####
+# selectWFS
+# filterWFS
+# geom filters
+# buildQuery
 
-#  VicmapClient <- newClient()
-#  melbourne <- st_read(system.file("shapes/melbourne.geojson", package="VicmapR"))
-# test <- VicmapClient %>%
-#   selectLayer("datavic:VMTRANS_TR_ROAD") %>%
-#   filterWFS(CLASS_CODE < 6 & ROAD_TYPE %in% c("STREET", "CRESCENT")) %>%
-#   #bbox(xmin = 144.25, ymin = -38.44, xmax = 144.50, ymax = -38.25) %>%
-#   intersects(shape = melbourne) %>%
-#   buildQuery() %>%
-#   sf::read_sf(as_tibble = T)
-# 
-# plot(test["CLASS_CODE"], key.pos = 1, axes = TRUE, key.width = lcm(1.3), key.length = 1.0)
+ VicmapClient <- newClient()
+ melbourne <- st_read(system.file("shapes/melbourne.geojson", package="VicmapR"))
+test <- VicmapClient %>%
+  selectWFS("datavic:VMTRANS_TR_ROAD") %>%
+  filterWFS(CLASS_CODE < 6 & ROAD_TYPE %in% c("STREET", "CRESCENT")) %>%
+  #bbox(xmin = 144.25, ymin = -38.44, xmax = 144.50, ymax = -38.25) %>%
+  intersects(shape = melbourne) %>%
+  buildQuery() %>%
+  sf::read_sf(as_tibble = T)
+
+plot(test["CLASS_CODE"], key.pos = 1, axes = TRUE, key.width = lcm(1.3), key.length = 1.0)
 
