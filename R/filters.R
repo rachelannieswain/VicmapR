@@ -12,12 +12,23 @@ selectLayer.OWSClient <- function(Client, layer) {
 }
 
 #### Format Polygon ####
-polygonFormat <- function(shape) {
+polygonFormat <- function(shape, ...) {
   UseMethod("polygonFormat", shape)
 }
 
-polygonFormat.sf <- function(shape) {
-  st_union(shape) %>% st_as_text()
+polygonFormat.sf <- function(shape, ...) {
+  shape_crs <- sf::st_crs(shape)
+  shape <- sf::st_union(shape) %>% sf::st_transform(3111)
+  if(hasArg(dTolerance)) {
+    tol <- dTolerance
+  } else {
+    perim <- sf::st_boundary(shape) %>% sf::st_length() 
+    tol <- perim/100
+  }
+    shape %>%
+    sf::st_simplify(dTolerance = tol) %>% 
+    sf::st_transform(shape_crs) %>%
+    sf::st_as_text()
 }
   
 filterGeo <- function(Client, method, shape = NULL, add_args = NULL) {
@@ -127,11 +138,33 @@ bbox <- function(Client, xmin, ymin, xmax, ymax) {
   filterGeo(Client, "bbox", add_args = add_args)
 }
 
-# VicmapClient <- newClient()
-# test <- VicmapClient %>% 
-#   selectLayer("datavic:VMHYDRO_WATERCOURSE_DRAIN") %>% 
-#   #bbox(xmin = 144.25, ymin = -38.44, xmax = 144.50, ymax = -38.25) %>% 
-#   intersects(shape = shapey) %>%
+#### filter ####
+
+filterWFS <- function(Client, ...) {
+  UseMethod("filterWFS", Client)
+}
+
+filterWFS.OWSClient <- function(Client, ...) {
+  add_filter <- dbplyr::translate_sql(..., )
+  add_filter <- gsub(pattern = "`", replacement = "", x = add_filter, )
+  if(is.null(Client$filter)) {
+    Client$filter <- add_filter
+  } else{
+    Client$filter <- paste(Client$filter, "AND", add_filter)
+  }
+  return(Client)
+}
+
+
+#  VicmapClient <- newClient()
+#  melbourne <- st_read(system.file("shapes/melbourne.geojson", package="VicmapR"))
+# test <- VicmapClient %>%
+#   selectLayer("datavic:VMTRANS_TR_ROAD") %>%
+#   filterWFS(CLASS_CODE < 6 & ROAD_TYPE %in% c("STREET", "CRESCENT")) %>%
+#   #bbox(xmin = 144.25, ymin = -38.44, xmax = 144.50, ymax = -38.25) %>%
+#   intersects(shape = melbourne) %>%
 #   buildQuery() %>%
 #   sf::read_sf(as_tibble = T)
+# 
+# plot(test["CLASS_CODE"], key.pos = 1, axes = TRUE, key.width = lcm(1.3), key.length = 1.0)
 
