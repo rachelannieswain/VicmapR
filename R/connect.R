@@ -28,13 +28,27 @@ ows4R::WFSClient$new(wfs_url,
 vic_wfs_client <- function(base_url = "http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wms", 
                            endpoint = NULL) {
   url <- paste0(base_url, endpoint)
-  crul::HttpClient$new(
-    url = url
-  )
+  vic_http_client(url)
 }
 
 as.vicmap_promise <- function(res) {
   structure(res,
             class = c("vicmap_promise", setdiff(class(res), "vicmap_promise"))
+  )
+}
+
+catalogue_base_url <- function() {
+  "http://services.land.vic.gov.au/catalogue"
+}
+
+vic_catalogue_client <- function(endpoint = NULL) {
+  url <- paste0(catalogue_base_url(), endpoint)
+  vic_http_client(url)
+}
+
+vic_http_client <- function(url) {
+  
+  crul::HttpClient$new(
+    url = url
   )
 }

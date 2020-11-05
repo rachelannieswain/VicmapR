@@ -131,3 +131,18 @@ feature_helper <- function(whse_name){
   
   xml_df
 }
+
+is_whse_object_name <- function(x) {
+  
+  ## detect object is a record and then just return FALSE
+  if (inherits(x, "vicmap_record")) {
+    return(FALSE)
+  }
+  
+  grepl("^[0-9A-Z_]+\\.[0-9A-Z_]+$", x)
+}
+
+slug_from_url <- function(x) {
+  if (grepl("^(http|www)", x)) x <- basename(x)
+  x
+}
