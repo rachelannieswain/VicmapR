@@ -9,11 +9,10 @@ url <- httr::parse_url("http://services.land.vic.gov.au/catalogue/publicproxy/gu
 url$query <- list(service = "wfs",
                   version = "2.0.0",
                   request = "GetFeature",
-                  typename = "datavic:VMHYDRO_WATERCOURSE_DRAIN",
+                  typename = layer,
                   outputFormat = "application/json",
                   srsName = paste0("EPSG:", CRS),
-                  count = 6,
-                  CQL_FILTER = NULL) %>% purrr::discard(is.null)
+                  count = 6) %>% purrr::discard(is.null)
 
 as.vicmap_promise(url)
 
@@ -54,4 +53,4 @@ print(sample_data)
 
 }
 
-vicmap_query() %>% head(10) %>% collect()
+#vicmap_query() %>% head(10) %>% collect()
