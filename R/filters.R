@@ -136,15 +136,15 @@ filterWFS.OWSClient <- function(Client, ...) {
 # geom filters
 # buildQuery
 
- VicmapClient <- newClient()
- melbourne <- st_read(system.file("shapes/melbourne.geojson", package="VicmapR"))
-test <- VicmapClient %>%
-  selectWFS("datavic:VMTRANS_TR_ROAD") %>%
-  filterWFS(CLASS_CODE < 6 & ROAD_TYPE %in% c("STREET", "CRESCENT")) %>%
-  #bbox(xmin = 144.25, ymin = -38.44, xmax = 144.50, ymax = -38.25) %>%
-  intersects(shape = melbourne) %>%
-  buildQuery() %>%
-  sf::read_sf(as_tibble = T)
-
-plot(test["CLASS_CODE"], key.pos = 1, axes = TRUE, key.width = lcm(1.3), key.length = 1.0)
+#  VicmapClient <- newClient()
+#  melbourne <- st_read(system.file("shapes/melbourne.geojson", package="VicmapR"))
+# test <- VicmapClient %>%
+#   selectWFS("datavic:VMTRANS_TR_ROAD") %>%
+#   filterWFS(CLASS_CODE < 6 & ROAD_TYPE %in% c("STREET", "CRESCENT")) %>%
+#   #bbox(xmin = 144.25, ymin = -38.44, xmax = 144.50, ymax = -38.25) %>%
+#   intersects(shape = melbourne) %>%
+#   buildQuery() %>%
+#   sf::read_sf(as_tibble = T)
+# 
+# plot(test["CLASS_CODE"], key.pos = 1, axes = TRUE, key.width = lcm(1.3), key.length = 1.0)
 
