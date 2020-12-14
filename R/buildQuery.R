@@ -1,13 +1,57 @@
-buildQuery <- function(Client) {
-  
-  queryUrl <- httr::parse_url(Client$getUrl())
-  queryUrl$query <- list(service = "wfs",
-                         version = "1.0.0",
-                         request = "GetFeature",
-                         typename = Client$selectLayer,
-                         outputFormat = "application/json",
-                         srsName = paste0("EPSG:4283"),
-                         CQL_FILTER = Client$filter) %>% purrr::discard(is.null)
-  
-  return(httr::build_url(queryUrl))
+as.vicmap_promise <- function(res) {
+  structure(res,
+            class = c("vicmap_promise", setdiff(class(res), "vicmap_promise"))
+  )
 }
+
+vicmap_query <- function(layer = "datavic:VMHYDRO_WATERCOURSE_DRAIN", CRS = 4283) {
+url <- httr::parse_url("http://services.land.vic.gov.au/catalogue/publicproxy/guest/dv_geoserver/wfs")
+url$query <- list(service = "wfs",
+                  version = "2.0.0",
+                  request = "GetFeature",
+                  typename = "datavic:VMHYDRO_WATERCOURSE_DRAIN",
+                  outputFormat = "application/json",
+                  srsName = paste0("EPSG:", CRS),
+                  count = 6,
+                  CQL_FILTER = NULL) %>% purrr::discard(is.null)
+
+as.vicmap_promise(url)
+
+}
+
+show_query.vicmap_promise <- function(x, ...) {
+
+request <- httr::build_url(x)
+
+return(request)
+
+}
+
+collect.vicmap_promise <- function(x, ...) {
+  
+  request <- httr::build_url(x)
+  
+  return(sf::read_sf(request, ...))
+  
+}
+
+head.vicmap_promise <- function(x, n = 5) {
+  
+x$query$count <- n 
+
+return(x)
+  
+}
+
+
+print.vicmap_promise <- function(x) {
+  
+request <- httr::build_url(x)  
+
+sample_data <- sf::read_sf(request)
+
+print(sample_data)
+
+}
+
+vicmap_query() %>% head(10) %>% collect()
