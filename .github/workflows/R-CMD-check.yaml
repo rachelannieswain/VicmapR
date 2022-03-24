@@ -33,6 +33,7 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       cache-version: v15
       PKG_CONFIG_PATH: /opt/software/lib/pkgconfig
+      RVER: ${{ matrix.config.r }}
 
     steps:
       - uses: actions/checkout@v2
@@ -76,8 +77,6 @@ jobs:
           RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
         run: |
           Rscript -e "install.packages('stringi')"
-          Rscript -e "install.packages('sf')"
-          Rscript -e "install.packages('mapview')"
           sudo apt install \
             libicu-dev 
           # install spatial dependencies
@@ -88,6 +87,9 @@ jobs:
             libgdal-dev \
             libgeos-dev \
             libproj-dev
+            Rscript -e "install.packages('sf')"
+            Rscript -e "if(Sys.getenv('RVER') == '3.5') devtools::install_version('mapview', '2.9.0')" \
+                    -e "if(Sys.getenv('RVER') != '3.5') install.packages('mapview')"
         
       - name: Install dependencies
         run: |
