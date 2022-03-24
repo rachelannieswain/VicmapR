@@ -88,6 +88,8 @@ jobs:
             libgeos-dev \
             libproj-dev
             
+          locate libproj.so
+            
           Rscript -e "if(Sys.getenv('RVER') == '3.5') remotes::install_version('mapview', '2.7.8')" \
                   -e "if(Sys.getenv('RVER') != '3.5') install.packages('mapview')" \
                   -e "sf::sf_extSoftVersion()"
