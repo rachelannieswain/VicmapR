@@ -87,14 +87,14 @@ jobs:
             libgdal-dev \
             libgeos-dev \
             libproj-dev
-            Rscript -e "install.packages('sf')"
-            Rscript -e "if(Sys.getenv('RVER') == '3.5') remotes::install_version('mapview', '2.7.8')" \
-                    -e "if(Sys.getenv('RVER') != '3.5') install.packages('mapview')"
+          gdalinfo --version
         
       - name: Install dependencies
         run: |
           options(repos = c(CRAN='https://packagemanager.rstudio.com/cran/__linux__/bionic/latest'))
-          remotes::install_deps(dependencies = TRUE, configure.args = c('sf' = '${{ matrix.config.sf_args }}'))
+          Rscript -e "if(Sys.getenv('RVER') == '3.5') remotes::install_version('mapview', '2.7.8')" \
+                  -e "if(Sys.getenv('RVER') != '3.5') install.packages('mapview')"
+          remotes::install_deps(dependencies = TRUE)
           install.packages("rcmdcheck")
           sf::sf_extSoftVersion()
         shell: Rscript {0}
