@@ -87,7 +87,7 @@ jobs:
             libgdal-dev \
             libgeos-dev \
             libproj-dev
-          gdalinfo --version
+           
         
       - name: Install dependencies
         run: |
