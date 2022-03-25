@@ -341,7 +341,7 @@ mapview(darebin_2021) + mapview(darebin, alpha.regions = 0.3, col.regions = "ora
 
 Now let's try the 10km radius.
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 
 # Swoops in 10k
 radius_2021 <- vicmap_query(layer = "datavic:FLORAFUANA1_SWOOPING_BIRD") %>%
@@ -357,7 +357,7 @@ mapview(radius_2021) + mapview(home_radius, alpha.regions = 0.3, col.regions = "
 
 And finally, the swoops on our cycling route. To find swoops within 300m we use the `INTERSECTS()` function and the cycling route with an added 300m buffer. Note: VicmapR geometric filters will be simplified, thus if precise intersections are desired, it is advised to do a cleanup of the filtered data once collected.
 
-```{r warning=FALSE, message=FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 
 route_line <- sf::st_read(system.file("shapes/cycle_route.geojson", package="VicmapR"), quiet = F) %>% 
   sf::st_transform(4283)
