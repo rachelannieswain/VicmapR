@@ -99,7 +99,7 @@ jobs:
       - name: Install dependencies
         run: |
           options(repos = c(CRAN='https://packagemanager.rstudio.com/cran/__linux__/bionic/latest'))
-          install.packages('sf')
+          install.packages('sf', type = 'source')
           sf::sf_extSoftVersion()
           if(Sys.getenv('RVER') == '3.5') remotes::install_version('mapview', '2.7.8')
           remotes::install_deps(dependencies = TRUE)
