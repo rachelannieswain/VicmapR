@@ -89,12 +89,14 @@ jobs:
             libproj-dev
 
           sudo ldconfig -p | grep libproj
+          sudo ldconfig -p | grep libicu-dev 
         
            
         
       - name: Install dependencies
         run: |
           install.packages("sf", repos = "https://cloud.r-project.org", configure.args = c(sf ="--with-proj-lib=/lib/x86_64-linux-gnu/"))
+          install.packages("stringi", repos = "https://cloud.r-project.org", configure.args = c(stringi ="--with-proj-lib=/lib/x86_64-linux-gnu/"))
           if(Sys.getenv('RVER') == '3.5') remotes::install_version('mapview', '2.7.8')
           remotes::install_deps(dependencies = TRUE)
           library(sf)
