@@ -84,17 +84,19 @@ jobs:
           sudo apt install \
             libudunits2-dev \
             libgdal-dev \
+            gdal-bin \
             libgeos-dev \
             libproj-dev
-            
+
           sudo ldconfig -p | grep libproj
         
            
         
       - name: Install dependencies
         run: |
+          remotes::update(remotes::package_deps("sf"))
           install.packages('sf', type = 'source', repos = 'https://cloud.r-project.org')
-          sf::sf_extSoftVerion()
+          library(sf)
         #  if(Sys.getenv('RVER') == '3.5') remotes::install_version('mapview', '2.7.8')
          # remotes::install_deps(dependencies = TRUE)
           #install.packages("rcmdcheck")          
