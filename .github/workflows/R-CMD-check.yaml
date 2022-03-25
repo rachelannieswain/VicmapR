@@ -95,7 +95,7 @@ jobs:
       - name: Install dependencies
         run: |
           library(remotes)
-          update(remotes::package_deps(sf))
+          update(remotes::package_deps('sf'))
           install.packages('sf', type = 'source', repos = 'https://cloud.r-project.org')
           library(sf)
         #  if(Sys.getenv('RVER') == '3.5') remotes::install_version('mapview', '2.7.8')
