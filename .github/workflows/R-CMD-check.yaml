@@ -94,8 +94,7 @@ jobs:
         
       - name: Install dependencies
         run: |
-          library(remotes)
-          update(remotes::package_deps('sf'))
+          install.packages("sf", configure.args = "--with-proj-lib=/lib/x86_64-linux-gnu/")
           if(Sys.getenv('RVER') == '3.5') remotes::install_version('mapview', '2.7.8')
           remotes::install_deps(dependencies = TRUE)
           library(sf)
