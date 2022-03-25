@@ -91,6 +91,8 @@ jobs:
             libgdal-dev \
             libgeos-dev \
             libproj-dev
+            
+          sudo ldconfig -p | grep libproj
         
            
         
