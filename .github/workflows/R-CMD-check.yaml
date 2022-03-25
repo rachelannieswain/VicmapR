@@ -89,7 +89,7 @@ jobs:
             libproj-dev
 
           sudo ldconfig -p | grep libproj
-          sudo ldconfig -p | grep libicu-dev 
+          sudo ldconfig -p | grep libicui18n
         
            
         
