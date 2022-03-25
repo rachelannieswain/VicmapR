@@ -319,7 +319,7 @@ These geometric filters allow us to perform basic spatial manipulation while ret
 
 Let's revisit our examples above. To get the swoops only in Darebin we can filter with `INTERSECTS()`.
 
-```{r warning=FALSE, message=FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 
 # Suburb polygon for Darebin
 darebin <- vicmap_query(layer = "datavic:VMADMIN_LGA_POLYGON") %>%
