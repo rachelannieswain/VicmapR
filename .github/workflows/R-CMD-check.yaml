@@ -96,7 +96,7 @@ jobs:
         
       - name: Install dependencies
         run: |
-          options(repos = c(CRAN = "https://cran.rstudio.com")
+          options(repos = c(CRAN = "https://cran.rstudio.com"))
           install.packages("sf")
           install.packages("stringi")
           if(Sys.getenv('RVER') == '3.5') remotes::install_version('mapview', '2.7.8')
