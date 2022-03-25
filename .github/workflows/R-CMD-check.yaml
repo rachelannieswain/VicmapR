@@ -70,6 +70,7 @@ jobs:
           brew install gdal proj geos udunits
           export LDFLAGS="-L/usr/local/opt/libpq/lib"
           export CPPFLAGS="-I/usr/local/opt/libpq/include"
+          
       - name: Install system dependencies
         if: runner.os == 'Linux'
         env:
@@ -92,7 +93,7 @@ jobs:
         
       - name: Install dependencies
         run: |
-          install.packages('sf', type = 'source')
+          install.packages('sf', type = 'source', repos = 'https://cloud.r-project.org')
           sf::sf_extSoftVerion()
         #  if(Sys.getenv('RVER') == '3.5') remotes::install_version('mapview', '2.7.8')
          # remotes::install_deps(dependencies = TRUE)
