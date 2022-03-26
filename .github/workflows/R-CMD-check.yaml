@@ -104,10 +104,6 @@ jobs:
           library(sf)
           install.packages("rcmdcheck")          
         shell: Rscript {0}
- 
-      - name: test script
-        run: devtools::load_all(".");  source("scripts/darebin_swoops.R")
-        shell: Rscript {0}       
         
 
       - name: Check
