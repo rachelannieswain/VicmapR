@@ -106,7 +106,7 @@ jobs:
         shell: Rscript {0}
  
       - name: test script
-        run: source("scripts/darebin_swoops.R")
+        run: devtools::load_all(".");  source("scripts/darebin_swoops.R")
         shell: Rscript {0}       
         
 

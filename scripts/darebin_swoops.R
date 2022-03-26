@@ -1,4 +1,4 @@
-library(VicmapR)
+
 darebin <- vicmap_query(layer = "datavic:VMADMIN_LGA_POLYGON") %>%
   select(LGA_NAME) %>% 
   filter(LGA_NAME == "DAREBIN") %>%
