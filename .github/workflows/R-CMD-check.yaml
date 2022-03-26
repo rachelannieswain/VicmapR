@@ -90,9 +90,6 @@ jobs:
 
           sudo ldconfig -p | grep libproj
           sudo ldconfig -p | grep libicui18n
-          echo $LD_LIBRARY_PATH
-          ls /usr/lib/x86_64-linux-gnu
-          export LD_LIBRARY_PATH=/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
         
            
         
